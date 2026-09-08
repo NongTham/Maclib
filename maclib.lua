@@ -170,17 +170,24 @@ local assets = {
 
 --// Functions
 local function GetGui()
-	local newGui = Instance.new("ScreenGui")
-	newGui.ScreenInsets = Enum.ScreenInsets.None
-	newGui.ResetOnSpawn = false
-	newGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	newGui.DisplayOrder = 2147483647
-
 	local parent = RunService:IsStudio() 
 		and LocalPlayer:FindFirstChild("PlayerGui")
 		or (gethui and gethui())
 		or (cloneref and cloneref(MacLib.GetService("CoreGui")) or MacLib.GetService("CoreGui"))
 
+	pcall(function()
+		if parent then
+			local old = parent:FindFirstChild("MacLib")
+			if old then old:Destroy() end
+		end
+	end)
+
+	local newGui = Instance.new("ScreenGui")
+	newGui.Name = "MacLib"
+	newGui.ScreenInsets = Enum.ScreenInsets.None
+	newGui.ResetOnSpawn = false
+	newGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	newGui.DisplayOrder = 2147483647
 	newGui.Parent = parent
 	return newGui
 end
