@@ -140,6 +140,11 @@ local ContentProvider = MacLib.GetService("ContentProvider")
 local UserInputService = MacLib.GetService("UserInputService")
 local Lighting = MacLib.GetService("Lighting")
 local Players = MacLib.GetService("Players")
+local Workspace = MacLib.GetService("Workspace")
+
+local function GetCamera()
+	return Workspace.CurrentCamera or Workspace:FindFirstChildWhichIsA("Camera")
+end
 
 --// Variables
 local isStudio = RunService:IsStudio()
@@ -265,7 +270,9 @@ function MacLib:Window(Settings)
 			baseUIScale.Scale = userScale
 			return
 		end
-		local vp = Camera.ViewportSize
+		local cam = GetCamera()
+		if not cam then return end
+		local vp = cam.ViewportSize
 		if not vp or vp.X < 50 or vp.Y < 50 then return end
 		local baseW = (Settings.Size and Settings.Size.X.Offset) or 868
 		local baseH = (Settings.Size and Settings.Size.Y.Offset) or 650
@@ -278,7 +285,17 @@ function MacLib:Window(Settings)
 		end
 	end
 	CheckViewportScale()
-	WindowFunctions.Maid:Give(Camera:GetPropertyChangedSignal("ViewportSize"):Connect(CheckViewportScale))
+	local activeCam = GetCamera()
+	if activeCam then
+		WindowFunctions.Maid:Give(activeCam:GetPropertyChangedSignal("ViewportSize"):Connect(CheckViewportScale))
+	end
+	WindowFunctions.Maid:Give(Workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+		local newCam = GetCamera()
+		if newCam then
+			CheckViewportScale()
+			WindowFunctions.Maid:Give(newCam:GetPropertyChangedSignal("ViewportSize"):Connect(CheckViewportScale))
+		end
+	end))
 
 	--// Floating Mobile Toggle Button
 	local isTouchDevice = UserInputService.TouchEnabled and not (UserInputService.KeyboardEnabled and UserInputService.MouseEnabled)
