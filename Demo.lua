@@ -5,7 +5,7 @@ if isfile and isfile("Maclib/maclib.lua") then
 elseif isfile and isfile("maclib.lua") then
 	MacLib = loadstring(readfile("maclib.lua"))()
 else
-	MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/biggaboy212/Maclib/main/maclib.lua"))()
+	MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/NongTham/Maclib/main/maclib.lua"))()
 end
 
 MacLib:Demo()

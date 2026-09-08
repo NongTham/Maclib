@@ -38,7 +38,7 @@
 ## 🚀 Quick Start
 
 ```lua
-local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/biggaboy212/Maclib/main/maclib.lua"))()
+local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/NongTham/Maclib/main/maclib.lua"))()
 
 local Window = MacLib:Window({
     Title = "Maclib Demo",
