@@ -1,11 +1,5 @@
-local MacLib
-if isfile and isfile("Maclib/maclib.lua") then
-	MacLib = loadstring(readfile("Maclib/maclib.lua"))()
-elseif isfile and isfile("maclib.lua") then
-	MacLib = loadstring(readfile("maclib.lua"))()
-else
-	MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/NongTham/Maclib/main/maclib.lua"))()
-end
+local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/NongTham/Maclib/main/maclib.lua?" .. tostring(os.time())))()
+
 
 --// สร้างหน้าต่าง UI พร้อมตั้งค่าสำหรับการใช้งานบนมือถือ (Mobile Optimized)
 local Window = MacLib:Window({
