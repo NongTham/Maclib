@@ -1,15 +1,26 @@
-local MacLib = loadstring(game:HttpGet("https://github.com/biggaboy212/Maclib/releases/latest/download/maclib.txt"))()
+local MacLib
+if isfile and isfile("Maclib/maclib.lua") then
+	MacLib = loadstring(readfile("Maclib/maclib.lua"))()
+elseif isfile and isfile("maclib.lua") then
+	MacLib = loadstring(readfile("maclib.lua"))()
+else
+	MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/biggaboy212/Maclib/main/maclib.lua"))()
+end
 
 local Window = MacLib:Window({
 	Title = "Maclib Demo",
-	Subtitle = "This is a subtitle.",
+	Subtitle = "Modern Edition v2.0",
 	Size = UDim2.fromOffset(868, 650),
 	DragStyle = 1,
 	DisabledWindowControls = {},
 	ShowUserInfo = true,
 	Keybind = Enum.KeyCode.RightControl,
 	AcrylicBlur = true,
+	AccentColor = MacLib.Themes.Blue, -- System Blue, Purple, Green, etc.
+	MobileToggle = true,              -- Floating button for mobile/touch devices
+	AutoAdjustScale = true,           -- Auto scales to fit mobile/small screens
 })
+
 
 local globalSettings = {
 	UIBlurToggle = Window:GlobalSetting({
@@ -55,9 +66,12 @@ local tabGroups = {
 }
 
 local tabs = {
-	Main = tabGroups.TabGroup1:Tab({ Name = "Demo", Image = "rbxassetid://18821914323" }),
-	Settings = tabGroups.TabGroup1:Tab({ Name = "Settings", Image = "rbxassetid://10734950309" })
+	Main = tabGroups.TabGroup1:Tab({ Name = "Demo", Image = "home" }), -- Supports Lucide icon names or rbxassetid!
+	Settings = tabGroups.TabGroup1:Tab({ Name = "Settings", Image = "settings" })
 }
+
+tabs.Main:SetBadge("v2.0")
+
 
 local sections = {
 	MainSection1 = tabs.Main:Section({ Side = "Left" }),
