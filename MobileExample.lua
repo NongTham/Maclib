@@ -1,4 +1,4 @@
-﻿local MacLib
+local MacLib
 if isfile and isfile("Maclib/maclib.lua") then
 	MacLib = loadstring(readfile("Maclib/maclib.lua"))()
 elseif isfile and isfile("maclib.lua") then
