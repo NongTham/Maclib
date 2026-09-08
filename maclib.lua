@@ -376,6 +376,16 @@ function MacLib:Window(Settings)
 		function WindowFunctions:SetMobileToggle(bool) end
 	end
 
+	function WindowFunctions:SetScale(newScale)
+		userScale = tonumber(newScale) or 1
+		CheckViewportScale()
+	end
+
+	function WindowFunctions:GetScale()
+		return baseUIScale.Scale
+	end
+
+
 	local sidebar = Instance.new("Frame")
 	sidebar.Name = "Sidebar"
 	sidebar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
