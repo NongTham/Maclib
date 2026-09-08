@@ -36,35 +36,27 @@ local MacLib = {
 		Yellow = Color3.fromRGB(255, 204, 0),
 	},
 	Icons = {
-		["home"] = { Image = "rbxassetid://10723415766" },
-		["settings"] = { Image = "rbxassetid://10734950309" },
-		["sliders"] = { Image = "rbxassetid://18772615246" },
-		["user"] = { Image = "rbxassetid://10747373176" },
-		["search"] = { Image = "rbxassetid://86737463322606" },
-		["bell"] = { Image = "rbxassetid://10709775082" },
-		["shield"] = { Image = "rbxassetid://10734952488" },
-		["sword"] = { Image = "rbxassetid://10709791437" },
-		["crosshair"] = { Image = "rbxassetid://10723346959" },
-		["eye"] = { Image = "rbxassetid://10723404508" },
-		["lock"] = { Image = "rbxassetid://10734944449" },
-		["unlock"] = { Image = "rbxassetid://10734963400" },
-		["file"] = { Image = "rbxassetid://10723405367" },
-		["folder"] = { Image = "rbxassetid://10723405786" },
-		["terminal"] = { Image = "rbxassetid://10734960783" },
-		["code"] = { Image = "rbxassetid://10709790202" },
-		["play"] = { Image = "rbxassetid://10734923549" },
-		["pause"] = { Image = "rbxassetid://10734923214" },
-		["zap"] = { Image = "rbxassetid://10734965158" },
-		["flame"] = { Image = "rbxassetid://10723406880" },
-		["star"] = { Image = "rbxassetid://10734954248" },
-		["heart"] = { Image = "rbxassetid://10723407889" },
-		["skull"] = { Image = "rbxassetid://10734953641" },
-		["globe"] = { Image = "rbxassetid://108952102602834" },
+		["home"] = { Image = "rbxassetid://16898613509", Size = Vector2.new(48, 48), Offset = Vector2.new(820, 147) },
+		["settings"] = { Image = "rbxassetid://16898613777", Size = Vector2.new(48, 48), Offset = Vector2.new(771, 257) },
+		["user"] = { Image = "rbxassetid://16898612819", Size = Vector2.new(48, 48), Offset = Vector2.new(918, 514) },
+		["bell"] = { Image = "rbxassetid://16898613044", Size = Vector2.new(48, 48), Offset = Vector2.new(869, 147) },
+		["shield"] = { Image = "rbxassetid://16898613777", Size = Vector2.new(48, 48), Offset = Vector2.new(869, 0) },
+		["sword"] = { Image = "rbxassetid://16898613777", Size = Vector2.new(48, 48), Offset = Vector2.new(710, 967) },
+		["crosshair"] = { Image = "rbxassetid://16898613044", Size = Vector2.new(48, 48), Offset = Vector2.new(453, 869) },
+		["search"] = { Image = "rbxassetid://16898613353", Size = Vector2.new(48, 48), Offset = Vector2.new(918, 196) },
+		["sliders"] = { Image = "rbxassetid://16898613777", Size = Vector2.new(48, 48), Offset = Vector2.new(404, 771) },
+		["folder"] = { Image = "rbxassetid://16898613353", Size = Vector2.new(48, 48), Offset = Vector2.new(404, 967) },
+		["file"] = { Image = "rbxassetid://16898613353", Size = Vector2.new(48, 48), Offset = Vector2.new(820, 661) },
+		["code"] = { Image = "rbxassetid://16898613699", Size = Vector2.new(48, 48), Offset = Vector2.new(967, 257) },
+		["terminal"] = { Image = "rbxassetid://16898613777", Size = Vector2.new(48, 48), Offset = Vector2.new(404, 918) },
+		["play"] = { Image = "rbxassetid://16898612819", Size = Vector2.new(48, 48), Offset = Vector2.new(306, 918) },
+		["lock"] = { Image = "rbxassetid://16898613509", Size = Vector2.new(48, 48), Offset = Vector2.new(820, 514) },
+		["unlock"] = { Image = "rbxassetid://16898613869", Size = Vector2.new(48, 48), Offset = Vector2.new(771, 710) },
+		["star"] = { Image = "rbxassetid://16898613613", Size = Vector2.new(48, 48), Offset = Vector2.new(355, 869) },
+		["heart"] = { Image = "rbxassetid://16898613613", Size = Vector2.new(48, 48), Offset = Vector2.new(771, 147) },
+		["globe"] = { Image = "rbxassetid://16898613509", Size = Vector2.new(48, 48), Offset = Vector2.new(771, 563) },
+		["compass"] = { Image = "rbxassetid://16898613044", Size = Vector2.new(48, 48), Offset = Vector2.new(514, 967) },
 		["grid"] = { Image = "rbxassetid://121484455191370" },
-		["compass"] = { Image = "rbxassetid://10709790644" },
-		["target"] = { Image = "rbxassetid://73265255323268" },
-		["refresh"] = { Image = "rbxassetid://10734933966" },
-		["trash"] = { Image = "rbxassetid://10747372992" },
 		["apple"] = { Image = "rbxassetid://108952102602834" },
 	}
 }
@@ -1710,19 +1702,19 @@ function MacLib:Window(Settings)
 			tabSwitcherName.TextTruncate = Enum.TextTruncate.SplitWord
 			tabSwitcherName.TextXAlignment = Enum.TextXAlignment.Left
 			tabSwitcherName.TextYAlignment = Enum.TextYAlignment.Top
-			tabSwitcherName.AutomaticSize = Enum.AutomaticSize.Y
+			tabSwitcherName.AutomaticSize = Enum.AutomaticSize.XY
 			tabSwitcherName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			tabSwitcherName.BackgroundTransparency = 1
 			tabSwitcherName.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			tabSwitcherName.BorderSizePixel = 0
-			tabSwitcherName.Size = UDim2.fromScale(1, 0)
+			tabSwitcherName.Size = UDim2.fromOffset(0, 0)
 			tabSwitcherName.Parent = tabSwitcher
 			tabSwitcherName.LayoutOrder = 1
 
 			local tabSwitcherUIPadding = Instance.new("UIPadding")
 			tabSwitcherUIPadding.Name = "TabSwitcherUIPadding"
-			tabSwitcherUIPadding.PaddingLeft = UDim.new(0, 24)
-			tabSwitcherUIPadding.PaddingRight = UDim.new(0, 35)
+			tabSwitcherUIPadding.PaddingLeft = UDim.new(0, 18)
+			tabSwitcherUIPadding.PaddingRight = UDim.new(0, 12)
 			tabSwitcherUIPadding.PaddingTop = UDim.new(0, 1)
 			tabSwitcherUIPadding.Parent = tabSwitcher
 

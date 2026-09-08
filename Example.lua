@@ -75,6 +75,7 @@ tabs.Main:SetBadge("v2.0")
 
 local sections = {
 	MainSection1 = tabs.Main:Section({ Side = "Left" }),
+	MainSection2 = tabs.Main:Section({ Side = "Right" })
 }
 
 sections.MainSection1:Header({
@@ -246,24 +247,47 @@ sections.MainSection1:Button({
 	end,
 })
 
-sections.MainSection1:Divider()
-
-sections.MainSection1:Header({
-	Text = "Header #2"
+sections.MainSection2:Header({
+	Text = "Information & Status"
 })
 
-sections.MainSection1:Paragraph({
-	Header = "Paragraph",
-	Body = "Paragraph body. Lorem ipsum odor amet, consectetuer adipiscing elit. Morbi tempus netus aliquet per velit est gravida."
+sections.MainSection2:Paragraph({
+	Header = "Maclib v2.0 Modern Edition",
+	Body = "Enhanced with full mobile support, Lucide icons, dynamic themes, memory leak fixes, and responsive scaling."
 })
 
-sections.MainSection1:Label({
-	Text = "Label. Lorem ipsum odor amet, consectetuer adipiscing elit."
+sections.MainSection2:Label({
+	Text = "Active Theme: System Blue"
 })
 
-sections.MainSection1:SubLabel({
-	Text = "Sub-Label. Lorem ipsum odor amet, consectetuer adipiscing elit."
+sections.MainSection2:SubLabel({
+	Text = "Supports both desktop and mobile/touch environments."
 })
+
+sections.MainSection2:Button({
+	Name = "Switch Accent to Purple",
+	Callback = function()
+		Window:SetAccentColor(MacLib.Themes.Purple)
+		Window:Notify({
+			Title = "Theme Updated",
+			Description = "Accent color changed to Purple!",
+			Lifetime = 3
+		})
+	end,
+})
+
+sections.MainSection2:Button({
+	Name = "Switch Accent to Emerald Green",
+	Callback = function()
+		Window:SetAccentColor(MacLib.Themes.Green)
+		Window:Notify({
+			Title = "Theme Updated",
+			Description = "Accent color changed to Green!",
+			Lifetime = 3
+		})
+	end,
+})
+
 
 MacLib:SetFolder("Maclib")
 tabs.Settings:InsertConfigSection("Left")
