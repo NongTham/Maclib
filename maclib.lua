@@ -964,13 +964,13 @@ function MacLib:Window(Settings)
 
 	local content = Instance.new("Frame")
 	content.Name = "Content"
-	content.AnchorPoint = Vector2.new(1, 0)
+	content.AnchorPoint = Vector2.new(0, 0)
 	content.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	content.BackgroundTransparency = 1
 	content.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	content.BorderSizePixel = 0
-	content.Position = UDim2.fromScale(1, 4.69e-08)
-	content.Size = UDim2.new(0, (base.AbsoluteSize.X - sidebar.AbsoluteSize.X), 1, 0)
+	content.Position = UDim2.new(sidebar.Size.X.Scale, sidebar.Size.X.Offset, 0, 0)
+	content.Size = UDim2.new(1 - sidebar.Size.X.Scale, -sidebar.Size.X.Offset, 1, 0)
 
 	local resizingContent = false
 	local defaultSidebarWidth = sidebar.AbsoluteSize.X
@@ -999,6 +999,19 @@ function MacLib:Window(Settings)
 		ChangeState("Idle")
 	end)
 
+		sidebar:GetPropertyChangedSignal("Size"):Connect(function()
+		if not resizingContent then
+			local sX = sidebar.Size.X
+			if sX.Scale > 0 then
+				content.Position = UDim2.new(sX.Scale, sX.Offset, 0, 0)
+				content.Size = UDim2.new(1 - sX.Scale, -sX.Offset, 1, 0)
+			else
+				content.Position = UDim2.new(0, sX.Offset, 0, 0)
+				content.Size = UDim2.new(1, -sX.Offset, 1, 0)
+			end
+		end
+	end)
+
 	dividerInteract.MouseButton1Down:Connect(function()
 		resizingContent = true
 		initialMouseX = UserInputService:GetMouseLocation().X
@@ -1023,7 +1036,8 @@ function MacLib:Window(Settings)
 			end
 
 			sidebar.Size = UDim2.new(0, newSidebarWidth, 1, 0)
-			content.Size = UDim2.new(0, base.AbsoluteSize.X - newSidebarWidth, 1, 0)
+			content.Position = UDim2.new(0, newSidebarWidth, 0, 0)
+			content.Size = UDim2.new(1, -newSidebarWidth, 1, 0)
 		end
 	end)
 
