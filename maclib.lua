@@ -97,10 +97,31 @@ local function ResolveIcon(imageLabel, icon, rectOffset, rectSize)
 		if sz then imageLabel.ImageRectSize = sz end
 		return
 	end
+	-- Decal asset mapping / auto-conversion to texture
+	local rawNum = (typeof(icon) == "number" and tostring(icon)) or (typeof(icon) == "string" and icon:match("(%d+)$"))
+	if rawNum == "105412598184757" then
+		imageLabel.Image = "rbxassetid://95060495526345"
+		imageLabel.ImageRectOffset = Vector2.zero
+		imageLabel.ImageRectSize = Vector2.zero
+		return
+	end
+
 	if typeof(icon) == "number" or (typeof(icon) == "string" and icon:match("^%d+$")) then
 		imageLabel.Image = "rbxassetid://" .. tostring(icon)
 		imageLabel.ImageRectOffset = rectOffset or Vector2.zero
 		imageLabel.ImageRectSize = rectSize or Vector2.zero
+		if rawNum then
+			task.spawn(function()
+				pcall(function()
+					if not imageLabel.IsLoaded and game and game.GetObjects then
+						local obj = game:GetObjects("rbxassetid://" .. rawNum)[1]
+						if obj and obj:IsA("Decal") and obj.Texture and obj.Texture ~= "" then
+							imageLabel.Image = obj.Texture
+						end
+					end
+				end)
+			end)
+		end
 		return
 	end
 	if typeof(icon) == "string" then
@@ -341,8 +362,10 @@ function MacLib:Window(Settings)
 		btnIcon.Size = UDim2.fromOffset(28, 28)
 		btnIcon.BackgroundTransparency = 1
 		btnIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+		btnIcon.ZIndex = 2147483647
 		ResolveIcon(btnIcon, Settings.MobileToggleIcon or "rbxassetid://105412598184757")
 		btnIcon.Parent = mobileBtn
+		pcall(function() ContentProvider:PreloadAsync({ btnIcon }) end)
 
 		local mDragging = false
 		local mDragStart = nil
