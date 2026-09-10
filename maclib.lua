@@ -97,13 +97,19 @@ local function ResolveIcon(imageLabel, icon, rectOffset, rectSize)
 		if sz then imageLabel.ImageRectSize = sz end
 		return
 	end
-	if typeof(icon) == "number" then
+	if typeof(icon) == "number" or (typeof(icon) == "string" and icon:match("^%d+$")) then
 		imageLabel.Image = "rbxassetid://" .. tostring(icon)
-		if rectOffset then imageLabel.ImageRectOffset = rectOffset end
-		if rectSize then imageLabel.ImageRectSize = rectSize end
+		imageLabel.ImageRectOffset = rectOffset or Vector2.zero
+		imageLabel.ImageRectSize = rectSize or Vector2.zero
 		return
 	end
 	if typeof(icon) == "string" then
+		if icon:match("^rbxassetid://") or icon:match("^rbxasset://") or icon:match("^https?://") then
+			imageLabel.Image = icon
+			imageLabel.ImageRectOffset = rectOffset or Vector2.zero
+			imageLabel.ImageRectSize = rectSize or Vector2.zero
+			return
+		end
 		local clean = icon:lower():gsub("^lucide:", ""):gsub("[_%s]+", "-")
 		local builtIn = MacLib.Icons[clean]
 		if builtIn then
@@ -244,6 +250,7 @@ function MacLib:Window(Settings)
 	base.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	base.BorderSizePixel = 0
 	base.Position = UDim2.fromScale(0.5, 0.5)
+	windowState = true
 	base.Size = Settings.Size or UDim2.fromOffset(868, 650)
 
 	local baseUIScale = Instance.new("UIScale")
@@ -308,10 +315,10 @@ function MacLib:Window(Settings)
 		mobileBtn = Instance.new("ImageButton")
 		mobileBtn.Name = "MaclibMobileToggle"
 		mobileBtn.AnchorPoint = Vector2.new(0.5, 0.5)
-		mobileBtn.Size = UDim2.fromOffset(46, 46)
+		mobileBtn.Size = UDim2.fromOffset(48, 48)
 		mobileBtn.Position = Settings.MobileTogglePosition or UDim2.new(0, 42, 0.5, 0)
 		mobileBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-		mobileBtn.BackgroundTransparency = 0.2
+		mobileBtn.BackgroundTransparency = 0.15
 		mobileBtn.BorderSizePixel = 0
 		mobileBtn.AutoButtonColor = false
 		mobileBtn.ZIndex = 2147483646
@@ -331,50 +338,65 @@ function MacLib:Window(Settings)
 		btnIcon.Name = "Icon"
 		btnIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 		btnIcon.Position = UDim2.fromScale(0.5, 0.5)
-		btnIcon.Size = UDim2.fromOffset(22, 22)
+		btnIcon.Size = UDim2.fromOffset(28, 28)
 		btnIcon.BackgroundTransparency = 1
 		btnIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-		ResolveIcon(btnIcon, Settings.MobileToggleIcon or assets.globe)
+		ResolveIcon(btnIcon, Settings.MobileToggleIcon or "rbxassetid://105412598184757")
 		btnIcon.Parent = mobileBtn
 
 		local mDragging = false
 		local mDragStart = nil
 		local mStartPos = nil
-		local mHasMoved = false
+		local mDragTouch = nil
+		local maxMovedDist = 0
 
 		mobileBtn.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				mDragging = true
-				mHasMoved = false
+				mDragTouch = input
 				mDragStart = input.Position
 				mStartPos = mobileBtn.Position
-
-				input.Changed:Connect(function()
-					if input.UserInputState == Enum.UserInputState.End then
-						mDragging = false
-						if not mHasMoved then
-							local state = not WindowFunctions:GetState()
-							WindowFunctions:SetState(state)
-						end
-					end
-				end)
+				maxMovedDist = 0
 			end
 		end)
 
-		WindowFunctions.Maid:Give(UserInputService.InputChanged:Connect(function(input)
-			if mDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local function onMobileBtnDrag(input)
+			if mDragging and (input == mDragTouch or input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 				local delta = input.Position - mDragStart
-				if delta.Magnitude > 6 then
-					mHasMoved = true
+				local dist = Vector2.new(delta.X, delta.Y).Magnitude
+				if dist > maxMovedDist then
+					maxMovedDist = dist
 				end
-				mobileBtn.Position = UDim2.new(
-					mStartPos.X.Scale,
-					mStartPos.X.Offset + delta.X,
-					mStartPos.Y.Scale,
-					mStartPos.Y.Offset + delta.Y
-				)
+
+				if maxMovedDist > 8 then
+					mobileBtn.Position = UDim2.new(
+						mStartPos.X.Scale,
+						mStartPos.X.Offset + delta.X,
+						mStartPos.Y.Scale,
+						mStartPos.Y.Offset + delta.Y
+					)
+				end
 			end
-		end))
+		end
+
+		local function onMobileBtnRelease(input)
+			if mDragging and (input == mDragTouch or input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+				mDragging = false
+				mDragTouch = nil
+
+				-- Single tap check: movement must not exceed 8 pixels
+				if maxMovedDist <= 8 then
+					local nextState = not base.Visible
+					WindowFunctions:SetState(nextState)
+				end
+			end
+		end
+
+		mobileBtn.InputChanged:Connect(onMobileBtnDrag)
+		WindowFunctions.Maid:Give(UserInputService.InputChanged:Connect(onMobileBtnDrag))
+
+		mobileBtn.InputEnded:Connect(onMobileBtnRelease)
+		WindowFunctions.Maid:Give(UserInputService.InputEnded:Connect(onMobileBtnRelease))
 
 		function WindowFunctions:SetMobileToggle(bool)
 			mobileBtn.Visible = bool
@@ -1063,63 +1085,37 @@ function MacLib:Window(Settings)
 	local function onDragStart(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 			dragging_ = true
+			dragInput = input
 			dragStart = input.Position
 			startPos = base.Position
-
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging_ = false
-				end
-			end)
 		end
 	end
 
 	local function onDragUpdate(input)
-		if dragging_ and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-			dragInput = input
+		if dragging_ and (input == dragInput or input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			update(input)
 		end
 	end
 
+	local function onDragEnd(input)
+		if dragging_ and (input == dragInput or input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+			dragging_ = false
+			dragInput = nil
+		end
+	end
+
+	WindowFunctions.Maid:Give(UserInputService.InputChanged:Connect(onDragUpdate))
+	WindowFunctions.Maid:Give(UserInputService.InputEnded:Connect(onDragEnd))
+
 	if not Settings.DragStyle or Settings.DragStyle == 1 then
-		interact.InputBegan:Connect(function(input)
+		interact.InputBegan:Connect(onDragStart)
+		topbar.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				onDragStart(input)
-			end
-		end)
-
-		interact.InputChanged:Connect(onDragUpdate)
-
-		UserInputService.InputChanged:Connect(function(input)
-			if input == dragInput and dragging_ then
-				update(input)
-			end
-		end)
-
-		interact.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-				dragging_ = false
 			end
 		end)
 	elseif Settings.DragStyle == 2 then
-		base.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-				onDragStart(input)
-			end
-		end)
-
-		base.InputChanged:Connect(onDragUpdate)
-
-		UserInputService.InputChanged:Connect(function(input)
-			if input == dragInput and dragging_ then
-				update(input)
-			end
-		end)
-
-		base.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-				dragging_ = false
-			end
-		end)
+		base.InputBegan:Connect(onDragStart)
 	end
 
 	local currentTab = Instance.new("TextLabel")
@@ -5644,7 +5640,7 @@ function MacLib:Window(Settings)
 	end
 
 	function WindowFunctions:GetState()
-		return windowState
+		return base.Visible
 	end
 
 	local onUnloadCallback
@@ -5688,7 +5684,26 @@ function MacLib:Window(Settings)
 		end
 	end))
 
-	minimize.MouseButton1Click:Connect(ToggleMenu)
+	local minDragMoved = false
+	local minDragStart = nil
+	minimize.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			minDragMoved = false
+			minDragStart = input.Position
+		end
+	end)
+	minimize.InputChanged:Connect(function(input)
+		if minDragStart and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			if (input.Position - minDragStart).Magnitude > 8 then
+				minDragMoved = true
+			end
+		end
+	end)
+	minimize.MouseButton1Click:Connect(function()
+		if not minDragMoved then
+			ToggleMenu()
+		end
+	end)
 	exit.MouseButton1Click:Connect(function()
 		WindowFunctions:Dialog({
 			Title = Settings.Title,

@@ -13,6 +13,7 @@ local Window = MacLib:Window({
 	AcrylicBlur = false,                -- ปิด Blur เพื่อให้ลื่นไหล (FPS สูงสุด) บนมือถือ
 	AccentColor = MacLib.Themes.Blue,    -- สี Accent หลัก
 	MobileToggle = true,                 -- เปิดปุ่มลอยสำหรับทัชสกรีน (ลากไปไหนก็ได้บนจอ)
+	MobileToggleIcon = "rbxassetid://105412598184757", -- ไอคอนปุ่มลอยมือถือตามที่กำหนด (105412598184757)
 	AutoAdjustScale = true,              -- ย่อ/ขยาย UI อัตโนมัติตามขนาดหน้าจอมือถือ
 	Scale = 0.85,                        -- ขนาดมาตราส่วนเริ่มต้น
 })
