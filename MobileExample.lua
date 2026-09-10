@@ -1,6 +1,5 @@
 local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/NongTham/Maclib/main/maclib.lua?" .. tostring(os.time())))()
 
-
 --// สร้างหน้าต่าง UI พร้อมตั้งค่าสำหรับการใช้งานบนมือถือ (Mobile Optimized)
 local Window = MacLib:Window({
 	Title = "Maclib Mobile",
@@ -13,7 +12,7 @@ local Window = MacLib:Window({
 	AcrylicBlur = false,                -- ปิด Blur เพื่อให้ลื่นไหล (FPS สูงสุด) บนมือถือ
 	AccentColor = MacLib.Themes.Blue,    -- สี Accent หลัก
 	MobileToggle = true,                 -- เปิดปุ่มลอยสำหรับทัชสกรีน (ลากไปไหนก็ได้บนจอ)
-	MobileToggleIcon = "rbxassetid://105412598184757", -- ไอคอนปุ่มลอยมือถือตามที่กำหนด (105412598184757)
+	MobileToggleIcon = "105412598184757", -- ไอคอนปุ่มลอยมือถือตามที่กำหนด (105412598184757)
 	AutoAdjustScale = true,              -- ย่อ/ขยาย UI อัตโนมัติตามขนาดหน้าจอมือถือ
 	Scale = 0.85,                        -- ขนาดมาตราส่วนเริ่มต้น
 })
@@ -32,14 +31,12 @@ local tabs = {
 tabs.Mobile:SetBadge("Mobile")
 
 --// ==========================================
---// แท็บ 1: ทดสอบการปรับแต่งหน้าจอและปุ่มลอย (Mobile)
+--// แท็บ 1: ปรับแต่งหน้าจอและปุ่มลอย (เต็มจอ 100% Full-Width)
 --// ==========================================
-local mobileLeft = tabs.Mobile:Section({ Side = "Left" })
-local mobileRight = tabs.Mobile:Section({ Side = "Right" })
+local scaleSec = tabs.Mobile:Section({ Side = "Left" })
+scaleSec:Header({ Name = "ปรับขนาดหน้าจอ (Scale & Display)" })
 
-mobileLeft:Header({ Name = "ปรับขนาดหน้าจอ (Scale)" })
-
-mobileLeft:Slider({
+scaleSec:Slider({
 	Name = "ขนาด UI (Scale %)",
 	Default = 85,
 	Minimum = 50,
@@ -51,7 +48,7 @@ mobileLeft:Slider({
 	end
 }, "UIScaleSlider")
 
-mobileLeft:Toggle({
+scaleSec:Toggle({
 	Name = "ปุ่มลอยบนหน้าจอ (Floating Button)",
 	Default = true,
 	Callback = function(bool)
@@ -64,7 +61,7 @@ mobileLeft:Toggle({
 	end
 }, "MobileToggleSwitch")
 
-mobileLeft:Toggle({
+scaleSec:Toggle({
 	Name = "กระจกเบลอ (Acrylic Blur)",
 	Default = false,
 	Callback = function(bool)
@@ -77,9 +74,10 @@ mobileLeft:Toggle({
 	end
 }, "AcrylicBlurSwitch")
 
-mobileRight:Header({ Name = "ทดสอบการแจ้งเตือนและ Dialog" })
+local actionSec = tabs.Mobile:Section({ Side = "Left" })
+actionSec:Header({ Name = "ทดสอบการทำงานของระบบ (Tests & Actions)" })
 
-mobileRight:Button({
+actionSec:Button({
 	Name = "ทดสอบ Dialog Pop-up",
 	Callback = function()
 		Window:Dialog({
@@ -104,7 +102,7 @@ mobileRight:Button({
 	end,
 })
 
-mobileRight:Button({
+actionSec:Button({
 	Name = "ทดสอบ Notification",
 	Callback = function()
 		Window:Notify({
@@ -115,23 +113,24 @@ mobileRight:Button({
 	end,
 })
 
-mobileRight:Header({ Name = "เปลี่ยนสี Accent Color" })
+local themeSec = tabs.Mobile:Section({ Side = "Left" })
+themeSec:Header({ Name = "เปลี่ยนสี Accent Color" })
 
-mobileRight:Button({
+themeSec:Button({
 	Name = "สีฟ้า (System Blue)",
 	Callback = function()
 		Window:SetAccentColor(MacLib.Themes.Blue)
 	end
 })
 
-mobileRight:Button({
+themeSec:Button({
 	Name = "สีม่วง (Purple)",
 	Callback = function()
 		Window:SetAccentColor(MacLib.Themes.Purple)
 	end
 })
 
-mobileRight:Button({
+themeSec:Button({
 	Name = "สีเขียว (Emerald)",
 	Callback = function()
 		Window:SetAccentColor(MacLib.Themes.Green)
@@ -139,14 +138,12 @@ mobileRight:Button({
 })
 
 --// ==========================================
---// แท็บ 2: ทดสอบ Controls ต่างๆ บนทัชสกรีน
+--// แท็บ 2: ทดสอบ Controls ต่างๆ บนทัชสกรีน (Full-Width)
 --// ==========================================
-local ctrlLeft = tabs.Controls:Section({ Side = "Left" })
-local ctrlRight = tabs.Controls:Section({ Side = "Right" })
+local ctrlSec1 = tabs.Controls:Section({ Side = "Left" })
+ctrlSec1:Header({ Name = "ทดสอบการสัมผัส (Touch Elements)" })
 
-ctrlLeft:Header({ Name = "ทดสอบการสัมผัส (Touch Elements)" })
-
-ctrlLeft:Toggle({
+ctrlSec1:Toggle({
 	Name = "เปิด / ปิด สวิตช์",
 	Default = false,
 	Callback = function(state)
@@ -158,7 +155,7 @@ ctrlLeft:Toggle({
 	end
 }, "DemoToggle")
 
-ctrlLeft:Slider({
+ctrlSec1:Slider({
 	Name = "ความเร็วเดิน (WalkSpeed)",
 	Default = 16,
 	Minimum = 16,
@@ -173,7 +170,7 @@ ctrlLeft:Slider({
 	end
 }, "WalkSpeedSlider")
 
-ctrlLeft:Slider({
+ctrlSec1:Slider({
 	Name = "แรงกระโดด (JumpPower)",
 	Default = 50,
 	Minimum = 50,
@@ -188,7 +185,7 @@ ctrlLeft:Slider({
 	end
 }, "JumpPowerSlider")
 
-ctrlLeft:Input({
+ctrlSec1:Input({
 	Name = "กล่องข้อความ (Input Box)",
 	Placeholder = "แตะเพื่อพิมพ์ข้อความ...",
 	AcceptedCharacters = "All",
@@ -201,9 +198,10 @@ ctrlLeft:Input({
 	end,
 }, "DemoInput")
 
-ctrlRight:Header({ Name = "Dropdown & Colorpicker" })
+local ctrlSec2 = tabs.Controls:Section({ Side = "Left" })
+ctrlSec2:Header({ Name = "Dropdown & Colorpicker" })
 
-ctrlRight:Dropdown({
+ctrlSec2:Dropdown({
 	Name = "เลือกอาวุธ (Single Dropdown)",
 	Multi = false,
 	Required = true,
@@ -218,7 +216,7 @@ ctrlRight:Dropdown({
 	end
 }, "WeaponDropdown")
 
-ctrlRight:Dropdown({
+ctrlSec2:Dropdown({
 	Name = "เลือกบัฟ (Multi Dropdown พร้อมค้นหา)",
 	Search = true,
 	Multi = true,
@@ -234,7 +232,7 @@ ctrlRight:Dropdown({
 	end
 }, "BuffsDropdown")
 
-ctrlRight:Colorpicker({
+ctrlSec2:Colorpicker({
 	Name = "เลือกสี (Colorpicker)",
 	Default = Color3.fromRGB(0, 170, 255),
 	Callback = function(c)
@@ -248,10 +246,10 @@ ctrlRight:Colorpicker({
 MacLib:SetFolder("MaclibMobileConfig")
 tabs.Settings:InsertConfigSection("Left")
 
-local settingsRight = tabs.Settings:Section({ Side = "Right" })
-settingsRight:Header({ Name = "การทำงานทั่วไป" })
+local settingsSec = tabs.Settings:Section({ Side = "Left" })
+settingsSec:Header({ Name = "การทำงานทั่วไป" })
 
-settingsRight:Button({
+settingsSec:Button({
 	Name = "ปิดและถอนการติดตั้ง UI (Unload)",
 	Callback = function()
 		Window:Unload()

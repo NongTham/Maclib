@@ -338,8 +338,8 @@ function MacLib:Window(Settings)
 		mobileBtn.AnchorPoint = Vector2.new(0.5, 0.5)
 		mobileBtn.Size = UDim2.fromOffset(48, 48)
 		mobileBtn.Position = Settings.MobileTogglePosition or UDim2.new(0, 42, 0.5, 0)
-		mobileBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-		mobileBtn.BackgroundTransparency = 0.15
+		mobileBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		mobileBtn.BackgroundTransparency = 0
 		mobileBtn.BorderSizePixel = 0
 		mobileBtn.AutoButtonColor = false
 		mobileBtn.ZIndex = 2147483646
@@ -359,7 +359,11 @@ function MacLib:Window(Settings)
 		btnIcon.Name = "Icon"
 		btnIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 		btnIcon.Position = UDim2.fromScale(0.5, 0.5)
-		btnIcon.Size = UDim2.fromOffset(28, 28)
+		btnIcon.Size = UDim2.fromScale(1, 1)
+		btnIcon.ScaleType = Enum.ScaleType.Crop
+		local iconCorner = Instance.new("UICorner")
+		iconCorner.CornerRadius = UDim.new(1, 0)
+		iconCorner.Parent = btnIcon
 		btnIcon.BackgroundTransparency = 1
 		btnIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
 		btnIcon.ZIndex = 2147483647
@@ -1847,12 +1851,25 @@ function MacLib:Window(Settings)
 						rightCount = rightCount + 1
 					end
 				end
+				local leftCount = 0
+				for _, child in ipairs(left:GetChildren()) do
+					if child:IsA("Frame") and child.Name == "Section" then
+						leftCount = leftCount + 1
+					end
+				end
+
 				if rightCount == 0 then
 					left.Size = UDim2.new(1, -10, 0, 0)
+					left.Visible = true
 					right.Visible = false
+				elseif leftCount == 0 then
+					right.Size = UDim2.new(1, -10, 0, 0)
+					right.Visible = true
+					left.Visible = false
 				else
-					left.Size = UDim2.new(0.5, -10, 0, 0)
-					right.Size = UDim2.new(0.5, -10, 0, 0)
+					left.Size = UDim2.new(0.5, -8, 0, 0)
+					right.Size = UDim2.new(0.5, -8, 0, 0)
+					left.Visible = true
 					right.Visible = true
 				end
 			end
