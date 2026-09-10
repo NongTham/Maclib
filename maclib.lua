@@ -157,6 +157,11 @@ local RunService = MacLib.GetService("RunService")
 local HttpService = MacLib.GetService("HttpService")
 local ContentProvider = MacLib.GetService("ContentProvider")
 local UserInputService = MacLib.GetService("UserInputService")
+
+function MacLib:IsMobile()
+	return UserInputService.TouchEnabled and not (UserInputService.KeyboardEnabled and UserInputService.MouseEnabled)
+end
+MacLib.IsMobile = MacLib:IsMobile()
 local Lighting = MacLib.GetService("Lighting")
 local Players = MacLib.GetService("Players")
 local Workspace = MacLib.GetService("Workspace")
@@ -326,6 +331,10 @@ function MacLib:Window(Settings)
 
 	--// Floating Mobile Toggle Button
 	local isTouchDevice = UserInputService.TouchEnabled and not (UserInputService.KeyboardEnabled and UserInputService.MouseEnabled)
+	WindowFunctions.IsMobile = isTouchDevice
+	function WindowFunctions:IsMobile()
+		return isTouchDevice
+	end
 	local showMobileToggle = Settings.MobileToggle
 	if showMobileToggle == nil then
 		showMobileToggle = isTouchDevice
