@@ -1,4 +1,4 @@
-local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/NongTham/Maclib/main/maclib.lua?" .. tostring(os.time())))()
+local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/NongTham/Maclib/refs/heads/main/maclib.lua?" .. tostring(os.time())))()
 
 --// สร้างหน้าต่าง UI พร้อมตั้งค่าสำหรับการใช้งานบนมือถือ (Mobile Optimized)
 local Window = MacLib:Window({
