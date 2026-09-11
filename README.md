@@ -115,9 +115,9 @@ Tab:Select()
 | `Subtitle` | string | `""` | Subtitle text displayed next to title |
 | `Size` | UDim2 | `UDim2.fromOffset(868, 650)` | Default window size |
 | `AccentColor` | Color3 / string | `Color3.fromRGB(0, 122, 255)` | Accent color or theme name |
-| `MobileToggle` | boolean | `isTouchDevice` | Enables floating draggable mobile toggle button |
-| `MobileToggleIcon` | string / number / table | `assets.globe` | Icon for the floating button |
-| `AutoAdjustScale` | boolean | `true` | Automatically scales UI to fit small screens |
+| `MobileToggle` | boolean | `Auto-detect` | Auto-detects Mobile & Emulators (Android, iOS, MuMu, BlueStacks, LDPlayer). `true` on mobile/emulators, `false` on PC |
+| `MobileToggleIcon` | string / number / table | `"105412598184757"` | Icon for the floating button (defaults to glowing neon icon) |
+| `AutoAdjustScale` | boolean | `true` | Automatically scales UI to fit small screens / mobile viewports |
 | `Keybind` | Enum.KeyCode | `Enum.KeyCode.RightControl` | Menu toggle keybind |
 | `AcrylicBlur` | boolean | `true` | Enables glass blur effects |
 | `ShowUserInfo` | boolean | `true` | Displays player avatar and username in sidebar |

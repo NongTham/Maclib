@@ -159,7 +159,12 @@ local ContentProvider = MacLib.GetService("ContentProvider")
 local UserInputService = MacLib.GetService("UserInputService")
 
 function MacLib:IsMobile()
-	return UserInputService.TouchEnabled and not (UserInputService.KeyboardEnabled and UserInputService.MouseEnabled)
+	local isMobilePlatform = false
+	pcall(function()
+		local platform = UserInputService:GetPlatform()
+		isMobilePlatform = (platform == Enum.Platform.Android or platform == Enum.Platform.IOS)
+	end)
+	return isMobilePlatform or (UserInputService.TouchEnabled and not UserInputService.MouseEnabled)
 end
 MacLib.IsMobile = MacLib:IsMobile()
 local Lighting = MacLib.GetService("Lighting")
@@ -330,14 +335,14 @@ function MacLib:Window(Settings)
 	end))
 
 	--// Floating Mobile Toggle Button
-	local isTouchDevice = UserInputService.TouchEnabled and not (UserInputService.KeyboardEnabled and UserInputService.MouseEnabled)
-	WindowFunctions.IsMobile = isTouchDevice
+	local isMobileDevice = MacLib:IsMobile()
+	WindowFunctions.IsMobile = isMobileDevice
 	function WindowFunctions:IsMobile()
-		return isTouchDevice
+		return isMobileDevice
 	end
 	local showMobileToggle = Settings.MobileToggle
 	if showMobileToggle == nil then
-		showMobileToggle = isTouchDevice
+		showMobileToggle = isMobileDevice
 	end
 
 	local mobileBtn
@@ -2237,6 +2242,11 @@ function MacLib:Window(Settings)
 				end
 
 				function SectionFunctions:Slider(Settings, Flag)
+					Settings = Settings or {}
+					Settings.Minimum = Settings.Minimum or Settings.Min or 0
+					Settings.Maximum = Settings.Maximum or Settings.Max or 100
+					Settings.Default = Settings.Default or Settings.default or Settings.Minimum
+					Settings.Precision = Settings.Precision or 0
 					local SliderFunctions = { Settings = Settings, IgnoreConfig = false, Class = "Slider" }
 					local slider = Instance.new("Frame")
 					slider.Name = "Slider"
@@ -2381,22 +2391,25 @@ function MacLib:Window(Settings)
 					local finalValue
 
 					local function SetValue(val, ignorecallback)
+						local minVal = SliderFunctions.Settings.Minimum or 0
+						local maxVal = SliderFunctions.Settings.Maximum or 100
+						local range = math.max(maxVal - minVal, 0.0001)
 						local posXScale
 
 						if typeof(val) == "Instance" then
 							local input = val
 							posXScale = math.clamp((input.Position.X - sliderBar.AbsolutePosition.X) / sliderBar.AbsoluteSize.X, 0, 1)
 						else
-							local value = val
-							posXScale = (value - SliderFunctions.Settings.Minimum) / (SliderFunctions.Settings.Maximum - Settings.Minimum)
+							local value = tonumber(val) or minVal
+							posXScale = math.clamp((value - minVal) / range, 0, 1)
 						end
 
 						local pos = UDim2.new(posXScale, 0, 0.5, 0)
 						sliderHead.Position = pos
 
-						finalValue = posXScale * (SliderFunctions.Settings.Maximum - SliderFunctions.Settings.Minimum) + Settings.Minimum
+						finalValue = posXScale * (maxVal - minVal) + minVal
 
-						sliderValue.Text = (Settings.Prefix or "") .. ValueDisplayMethod(finalValue, SliderFunctions.Settings.Precision) .. (Settings.Suffix or "")
+						sliderValue.Text = (SliderFunctions.Settings.Prefix or "") .. ValueDisplayMethod(finalValue, SliderFunctions.Settings.Precision) .. (SliderFunctions.Settings.Suffix or "")
 
 						if not ignorecallback then
 							task.spawn(function()
